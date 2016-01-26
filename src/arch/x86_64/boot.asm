@@ -1,4 +1,18 @@
 global start
+extern long_mode_start
+
+section .rodata
+gdt64:
+    dq 0 ; zero entry
+.code: equ $ - gdt64
+    ; code segment
+    dq (1 << 44) | (1 << 47) | (1 << 41) | (1 << 43) | (1 << 53)
+.data: equ $ - gdt64
+    ; data segment
+    dq (1 << 44) | (1 << 47) | (1 << 41)
+.pointer:
+    dw $ - gdt64 - 1
+    dq gdt64
 
 section .text
 bits 32
@@ -12,9 +26,19 @@ start:
     call set_up_page_tables
     call enable_paging
 
-    ; print `OK` to screen
-    mov dword [0xb8000], 0x2f4b2f4f
-    hlt
+    ; load the 64-bit GDT
+    lgdt [gdt64.pointer]
+
+    ; update selectors
+    mov ax, gdt64.data
+    mov ss, ax  ; stack selector
+    mov ds, ax  ; data selector
+    mov es, ax  ; extra selector
+
+    ; jump far extern long_mode_start
+    ; this sets the new code selector for 64-bit long mode
+    ; so that long_mode_start will be 64-bit code
+    jmp gdt64.code:long_mode_start
 
 error:
     mov dword [0xb8000], 0x4f524f45
