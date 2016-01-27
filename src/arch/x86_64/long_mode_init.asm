@@ -3,6 +3,10 @@ global long_mode_start
 section .text
 bits 64
 long_mode_start:
+    ; call rust_main
+    extern rust_main
+    call rust_main
+
     ; print banner to screen
     ; rather shameful assembly here,
     ; but oh well, this is it for now
