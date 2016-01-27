@@ -5,3 +5,6 @@ authors = ["Alejandro Martinez Ruiz <alex@flawedcode.org>"]
 
 [lib]
 crate-type = ["staticlib"]
+
+[dependencies]
+rlibc = "1.0.0"
