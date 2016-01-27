@@ -8,6 +8,9 @@ assembly_source_files := $(wildcard src/arch/$(arch)/*.asm)
 assembly_object_files := $(patsubst src/arch/$(arch)/%.asm, \
 	build/arch/$(arch)/%.o, $(assembly_source_files))
 
+target ?= $(arch)-unknown-linux-gnu
+minux := target/$(target)/debug/libminux.a
+
 .PHONY: all clean run iso
 
 all: $(kernel)
@@ -27,8 +30,11 @@ $(iso): $(kernel) $(grub_cfg)
 	@grub-mkrescue -o $(iso) build/isofiles 2> /dev/null
 	@rm -r build/isofiles
 
-$(kernel): $(assembly_object_files) $(linker_script)
-	@ld -n -T $(linker_script) -o $(kernel) $(assembly_object_files)
+$(kernel): cargo $(minux) $(assembly_object_files) $(linker_script)
+	@ld -n -T $(linker_script) -o $(kernel) $(assembly_object_files) $(minux)
+
+cargo:
+	@cargo build --target $(target)
 
 # compile assembly files
 build/arch/$(arch)/%.o: src/arch/$(arch)/%.asm
