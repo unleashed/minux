@@ -8,7 +8,7 @@ assembly_source_files := $(wildcard src/arch/$(arch)/*.asm)
 assembly_object_files := $(patsubst src/arch/$(arch)/%.asm, \
 	build/arch/$(arch)/%.o, $(assembly_source_files))
 
-target ?= $(arch)-unknown-linux-gnu
+target ?= $(arch)-unknown-none-gnu
 minux := target/$(target)/debug/libminux.a
 
 .PHONY: all clean run iso
@@ -34,7 +34,7 @@ $(kernel): cargo $(minux) $(assembly_object_files) $(linker_script)
 	@ld -n --gc-sections -T $(linker_script) -o $(kernel) $(assembly_object_files) $(minux)
 
 cargo:
-	@cargo rustc --target $(target) -- -Z no-landing-pads -C no-redzone -C target-feature=-mmx,-sse,-sse2,-sse3,-sse4.1,-sse4.2,-3dnow,-3dnowa,-avx,-avx2
+	@cargo rustc --target $(target) -- -Z no-landing-pads
 
 # compile assembly files
 build/arch/$(arch)/%.o: src/arch/$(arch)/%.asm
