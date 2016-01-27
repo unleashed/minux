@@ -1,0 +1,7 @@
+[package]
+name = "minux"
+version = "0.0.0"
+authors = ["Alejandro Martinez Ruiz <alex@flawedcode.org>"]
+
+[lib]
+crate-type = ["staticlib"]
