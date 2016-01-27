@@ -31,7 +31,7 @@ $(iso): $(kernel) $(grub_cfg)
 	@rm -r build/isofiles
 
 $(kernel): cargo $(minux) $(assembly_object_files) $(linker_script)
-	@ld -n -T $(linker_script) -o $(kernel) $(assembly_object_files) $(minux)
+	@ld -n --gc-sections -T $(linker_script) -o $(kernel) $(assembly_object_files) $(minux)
 
 cargo:
 	@cargo build --target $(target)
