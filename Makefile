@@ -30,11 +30,11 @@ $(iso): $(kernel) $(grub_cfg)
 	@grub2-mkrescue -o $(iso) build/isofiles 2> /dev/null
 	@rm -r build/isofiles
 
-$(kernel): cargo $(minux) $(assembly_object_files) $(linker_script)
+$(kernel): xargo $(minux) $(assembly_object_files) $(linker_script)
 	@ld -n --gc-sections -T $(linker_script) -o $(kernel) $(assembly_object_files) $(minux)
 
-cargo:
-	@RUST_TARGET_PATH=$(PWD) xargo $(CARGO_OPTS) rustc --target $(target) $(RUSTC_OPTS) -- -Z no-landing-pads $(RUSTC_EXTRA_OPTS)
+xargo:
+	@RUST_TARGET_PATH=$(PWD) xargo build --target $(target)
 
 # compile assembly files
 build/arch/$(arch)/%.o: src/arch/$(arch)/%.asm
