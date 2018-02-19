@@ -8,7 +8,7 @@ assembly_source_files := $(wildcard src/arch/$(arch)/*.asm)
 assembly_object_files := $(patsubst src/arch/$(arch)/%.asm, \
 	build/arch/$(arch)/%.o, $(assembly_source_files))
 
-target ?= $(arch)-unknown-none-gnu
+target ?= $(arch)-minux
 minux := target/$(target)/debug/libminux.a
 
 .PHONY: all clean run iso
